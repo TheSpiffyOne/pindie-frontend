@@ -1,0 +1,1 @@
+<img className ="logo__image" src="/images/logo.svg" alt='Логотип Pindie' />
