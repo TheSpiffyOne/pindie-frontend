@@ -9,7 +9,7 @@ export const useStore = create((set) => ({
   token: null,
   openPopup: () => set({ popupIsOpened: true}),
   closePopup: () => set({ popupIsOpened: false}),
-  login: (jwt, currentUser) => set({ isAuth: true, user: { ...user, id: user._id }, token: jwt }),
+  login: (jwt, currentUser) => set({ isAuthorized: true, user: {...currentUser, id: currentUser._id}, token: jwt }),
   logout: () => set({ token: null, isAuthorized: false, currentUser: null }),
   checkIsAuthorized: async () => {
     const jwt = getJWT();
