@@ -1,1 +1,0 @@
-<img className ="banner__image" src="/images/banner-illustration.jpg" alt='Логотип Pindie' />
