@@ -12,8 +12,8 @@ import { GameNotFound } from "@/app/components/GameNotFound/GameNotFound";
 export default function GamePage(props) {
   const [preloaderVisible, setPreloaderVisible] = useState(true);
   const [game, setGame] = useState(null)
-  const [isVoted, setIsVoted] = useState(false);
   const { openPopup, checkIsAuthorized, currentUser, isAuthorized } = useStore();
+  const [isVoted, setIsVoted] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -33,19 +33,20 @@ export default function GamePage(props) {
 
   useEffect(() => {
     if (currentUser && game) {
-      setIsVoted(checkIfUserVoted(game, currentUser.id));
+      setIsVoted(checkIfUserVoted(game, currentUser._id));
     } else {
       setIsVoted(false)
     }
-  }, [currentUser]);
+  }, [currentUser, game]);
 
   const handleVote = async () => {
-    if (isAuthorized) {
+    if (isAuthorized && currentUser) {
       const jwt = getJWT();
       let usersIdArray = game.users.length
         ? game.users.map((user) => user.id)
         : [];
-      usersIdArray.push(currentUser.id);
+        console.log(currentUser)
+      usersIdArray.push(currentUser._id);
       const response = await vote(
         `${endpoints.games}/${game.id}`,
         jwt,

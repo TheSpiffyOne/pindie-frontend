@@ -30,7 +30,6 @@ export const normalizeData = (data) => {
     return data.map((item) => {
         return normalizeDataObject(item)
     })
-
 }
 
 export const getNormalizedGameDataByCategory = async (url, category) =>{
