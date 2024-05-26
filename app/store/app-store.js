@@ -1,27 +1,38 @@
-import { create } from 'zustand';
-import { getJWT, removeJWT, getMe, isResponseOk } from '../api/api-utils';
-import { endpoints } from '../api/config';
+import { create } from "zustand";
+import { getJWT, setJWT, removeJWT, getMe } from "../api/api-utils";
+import { endpoints } from "../api/config";
 
 export const useStore = create((set) => ({
-  isAuthorized: false,
-  popupIsOpened: false,
-  currentUser: null,
+  isAuth: false,
+  user: null,
   token: null,
-  openPopup: () => set({ popupIsOpened: true}),
-  closePopup: () => set({ popupIsOpened: false}),
-  login: (jwt, currentUser) => set({ isAuthorized: true, user: {...currentUser, id: currentUser._id}, token: jwt }),
-  logout: () => set({ token: null, isAuthorized: false, currentUser: null }),
-  checkIsAuthorized: async () => {
+  login: (user, token) => {
+    /* С помощью функции set устанавливаем новое состояние хранилища */
+    set({ isAuth: true, user, token });
+    /* Записываем полученный токен */
+    setJWT(token);
+  },
+  logout: () => {
+    /* Возвращаем изначальные состояния */
+    set({ isAuth: false, user: null, token: null });
+    /* Удаляем токен */
+    removeJWT();
+  },
+  checkAuth: async () => {
     const jwt = getJWT();
     if (jwt) {
-      getMe(endpoints.me, jwt).then((userData) => {
-        if (isResponseOk(userData)) {
-          set({ isAuthorized: true, currentUser: userData});
-        } else {
-          set({ isAuthorized: false, currentUser: null, token: null});
-          removeJWT();
-        }
-      });
+      const user = await getMe(endpoints.me, jwt);
+      if (user) {
+        /* Сохраняем полученные данные и токен */
+        set({ isAuth: true, user: { ...user, id: user._id }, token: jwt });
+        setJWT(jwt);
+      } else {
+        /* Возвращаем изначальные состояния и удаляем токен */
+        set({ isAuth: false, user: null, token: null });
+        removeJWT();
+      }
+    } else {
+      set({ isAuth: false, user: null, token: null });
     }
   },
 }));

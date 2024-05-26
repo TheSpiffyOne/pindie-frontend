@@ -1,12 +1,10 @@
-import { AuthForm } from "../components/AuthForm/AuthForm";
+import { AuthForm } from "../components/AuthForm/AuthForm"
+import Styles from "./login.module.css";
 
-export default function Home() {
-
+export default function LoginPage () {
   return (
-    <main className="main">
-        <div style={{margin: '64px auto', maxWidth: '768px', padding: '64px', border: '4px solid black'}}>
-            <AuthForm />
-        </div>
+    <main className={Styles['main']}>
+      <AuthForm />
     </main>
-  );
+  )
 }

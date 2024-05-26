@@ -8,11 +8,12 @@ import { useEffect } from 'react';
 import { useStore } from './store/app-store';
 
 export const App = (props) => {
-  const { checkIsAuthorized } = useStore()
+
+  const store = useStore();
 
   useEffect(() => {
-    checkIsAuthorized();
-}, [])
+    store.checkAuth();
+  }, []);
 
   return (
     <>

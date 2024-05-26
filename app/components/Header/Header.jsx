@@ -1,34 +1,34 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState } from "react";
 
 import Styles from "./Header.module.css";
 import { Overlay } from "../Overlay/Overlay";
 import { Popup } from "../Popup/Popup";
 import { AuthForm } from "../AuthForm/AuthForm";
 
-import { endpoints } from "@/app/api/config";
-import { getJWT, removeJWT, getMe, isResponseOk } from "@/app/api/api-utils";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { useStore } from "@/app/store/app-store";
 
-
-
 export const Header = () => {
-  const {popupIsOpened, openPopup, closePopup, isAuthorized, checkIsAuthorized, logout, setPopupIsOpened} = useStore();
+  const [popupIsOpened, setPopupIsOpened] = useState(false);
+
+  const authContext = useStore();
+
+  const openPopup = () => {
+    setPopupIsOpened(true);
+  };
+  const closePopup = () => {
+    setPopupIsOpened(false);
+  };
 
   const pathname = usePathname();
-  useEffect(() => {
-    checkIsAuthorized();
-}, [])
-const handleLogout = () => {
-  logout();
-  removeJWT();
-};
 
+  const handleLogout = () => {
+    authContext.logout();
+  };
   return (
     <header className={Styles["header"]}>
       {pathname === "/" ? (
@@ -53,8 +53,9 @@ const handleLogout = () => {
           <li className={Styles["menu__item"]}>
             <Link
               href="/new"
-              className={`${Styles["menu__link"]} ${pathname === "/new" && Styles["menu__link_active"]
-                }`}
+              className={`${Styles["menu__link"]} ${
+                pathname === "/new" && Styles["menu__link_active"]
+              }`}
             >
               Новинки
             </Link>
@@ -62,8 +63,9 @@ const handleLogout = () => {
           <li className={Styles["menu__item"]}>
             <Link
               href="/popular"
-              className={`${Styles["menu__link"]} ${pathname === "/popular" && Styles["menu__link_active"]
-                }`}
+              className={`${Styles["menu__link"]} ${
+                pathname === "/popular" && Styles["menu__link_active"]
+              }`}
             >
               Популярные
             </Link>
@@ -71,8 +73,9 @@ const handleLogout = () => {
           <li className={Styles["menu__item"]}>
             <Link
               href="/shooters"
-              className={`${Styles["menu__link"]} ${pathname === "/shooters" && Styles["menu__link_active"]
-                }`}
+              className={`${Styles["menu__link"]} ${
+                pathname === "/shooters" && Styles["menu__link_active"]
+              }`}
             >
               Шутеры
             </Link>
@@ -80,17 +83,19 @@ const handleLogout = () => {
           <li className={Styles["menu__item"]}>
             <Link
               href="/runners"
-              className={`${Styles["menu__link"]} ${pathname === "/runners" && Styles["menu__link_active"]
-                }`}
+              className={`${Styles["menu__link"]} ${
+                pathname === "/runners" && Styles["menu__link_active"]
+              }`}
             >
-              Ранеры
+              Раннеры
             </Link>
           </li>
           <li className={Styles["menu__item"]}>
             <Link
               href="/pixel-games"
-              className={`${Styles["menu__link"]} ${pathname === "/pixel-games" && Styles["menu__link_active"]
-                }`}
+              className={`${Styles["menu__link"]} ${
+                pathname === "/pixel-games" && Styles["menu__link_active"]
+              }`}
             >
               Пиксельные
             </Link>
@@ -98,15 +103,16 @@ const handleLogout = () => {
           <li className={Styles["menu__item"]}>
             <Link
               href="/tds"
-              className={`${Styles["menu__link"]} ${pathname === "/tds" && Styles["menu__link_active"]
-                }`}
+              className={`${Styles["menu__link"]} ${
+                pathname === "/tds" && Styles["menu__link_active"]
+              }`}
             >
               TDS
             </Link>
           </li>
         </ul>
         <div className={Styles["auth"]}>
-          {isAuthorized ? (
+          {authContext.isAuth ? (
             <button className={Styles["auth__button"]} onClick={handleLogout}>
               Выйти
             </button>
@@ -119,7 +125,7 @@ const handleLogout = () => {
       </nav>
       <Overlay isOpened={popupIsOpened} close={closePopup} />
       <Popup isOpened={popupIsOpened} close={closePopup}>
-        <AuthForm close={closePopup}/>
+        <AuthForm close={closePopup} />
       </Popup>
     </header>
   );
