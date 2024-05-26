@@ -1,1 +1,0 @@
-<img className ="promo__image" src="/images/promo-illustration.svg" />
